@@ -25,29 +25,70 @@ from jackdaw.engine.run_init import initialize_run
 FIXTURES = Path(__file__).parent.parent / "fixtures" / "game_scenarios"
 
 SUIT = {"H": Suit.HEARTS, "D": Suit.DIAMONDS, "C": Suit.CLUBS, "S": Suit.SPADES}
-RANK = {"2": Rank.TWO, "3": Rank.THREE, "4": Rank.FOUR, "5": Rank.FIVE, "6": Rank.SIX,
-        "7": Rank.SEVEN, "8": Rank.EIGHT, "9": Rank.NINE, "T": Rank.TEN, "J": Rank.JACK,
-        "Q": Rank.QUEEN, "K": Rank.KING, "A": Rank.ACE}
-EDITION = {"e_foil": {"foil": True}, "e_holo": {"holo": True},
-           "e_polychrome": {"polychrome": True}, "e_negative": {"negative": True}}
+RANK = {
+    "2": Rank.TWO,
+    "3": Rank.THREE,
+    "4": Rank.FOUR,
+    "5": Rank.FIVE,
+    "6": Rank.SIX,
+    "7": Rank.SEVEN,
+    "8": Rank.EIGHT,
+    "9": Rank.NINE,
+    "T": Rank.TEN,
+    "J": Rank.JACK,
+    "Q": Rank.QUEEN,
+    "K": Rank.KING,
+    "A": Rank.ACE,
+}
+EDITION = {
+    "e_foil": {"foil": True},
+    "e_holo": {"holo": True},
+    "e_polychrome": {"polychrome": True},
+    "e_negative": {"negative": True},
+}
 BLIND_KEY = {
-    "Small Blind": "bl_small", "Big Blind": "bl_big", "The Hook": "bl_hook", "The Ox": "bl_ox",
-    "The House": "bl_house", "The Wall": "bl_wall", "The Wheel": "bl_wheel", "The Arm": "bl_arm",
-    "The Club": "bl_club", "The Fish": "bl_fish", "The Psychic": "bl_psychic",
-    "The Goad": "bl_goad", "The Water": "bl_water", "The Window": "bl_window",
-    "The Manacle": "bl_manacle", "The Eye": "bl_eye", "The Mouth": "bl_mouth",
-    "The Plant": "bl_plant", "The Serpent": "bl_serpent", "The Pillar": "bl_pillar",
-    "The Needle": "bl_needle", "The Head": "bl_head", "The Tooth": "bl_tooth",
-    "The Flint": "bl_flint", "The Mark": "bl_mark", "Amber Acorn": "bl_final_acorn",
-    "Verdant Leaf": "bl_final_leaf", "Violet Vessel": "bl_final_vessel",
-    "Crimson Heart": "bl_final_heart", "Cerulean Bell": "bl_final_bell",
+    "Small Blind": "bl_small",
+    "Big Blind": "bl_big",
+    "The Hook": "bl_hook",
+    "The Ox": "bl_ox",
+    "The House": "bl_house",
+    "The Wall": "bl_wall",
+    "The Wheel": "bl_wheel",
+    "The Arm": "bl_arm",
+    "The Club": "bl_club",
+    "The Fish": "bl_fish",
+    "The Psychic": "bl_psychic",
+    "The Goad": "bl_goad",
+    "The Water": "bl_water",
+    "The Window": "bl_window",
+    "The Manacle": "bl_manacle",
+    "The Eye": "bl_eye",
+    "The Mouth": "bl_mouth",
+    "The Plant": "bl_plant",
+    "The Serpent": "bl_serpent",
+    "The Pillar": "bl_pillar",
+    "The Needle": "bl_needle",
+    "The Head": "bl_head",
+    "The Tooth": "bl_tooth",
+    "The Flint": "bl_flint",
+    "The Mark": "bl_mark",
+    "Amber Acorn": "bl_final_acorn",
+    "Verdant Leaf": "bl_final_leaf",
+    "Violet Vessel": "bl_final_vessel",
+    "Crimson Heart": "bl_final_heart",
+    "Cerulean Bell": "bl_final_bell",
 }
 
 
 def _card(c):
     s, r = c["key"].split("_")
-    card = create_playing_card(SUIT[s], RANK[r], enhancement=c["enhancement"] or "c_base",
-                               edition=EDITION.get(c["edition"]), seal=c["seal"])
+    card = create_playing_card(
+        SUIT[s],
+        RANK[r],
+        enhancement=c["enhancement"] or "c_base",
+        edition=EDITION.get(c["edition"]),
+        seal=c["seal"],
+    )
     card.debuff = c["debuffed"]
     if c.get("played_this_ante"):
         card.ability["played_this_ante"] = True
