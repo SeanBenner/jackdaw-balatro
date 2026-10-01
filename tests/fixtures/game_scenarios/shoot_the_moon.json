@@ -1,0 +1,1148 @@
+{
+ "id": "shoot_the_moon",
+ "notes": [],
+ "injected_card_ids": [
+  3439,
+  3440,
+  3441,
+  3442
+ ],
+ "description": "Shoot the Moon with queens held",
+ "tags": [
+  "held"
+ ],
+ "schema_version": "0.2",
+ "source": {
+  "game_version": "1.0.1o-FULL",
+  "balatrobot_version": "1.5.2",
+  "recorded": "2026-09-30"
+ },
+ "recipe": {
+  "jokers": [
+   "j_shoot_the_moon"
+  ],
+  "cards": [
+   {
+    "key": "H_7"
+   },
+   {
+    "key": "S_7"
+   },
+   {
+    "key": "S_Q"
+   },
+   {
+    "key": "H_Q",
+    "enhancement": "STEEL"
+   }
+  ],
+  "play": [
+   0,
+   1
+  ],
+  "seed": "SIMEVAL1"
+ },
+ "phase": "SELECTING_HAND",
+ "observable": {
+  "run": {
+   "seed": "SIMEVAL1",
+   "deck": "b_blue",
+   "stake": 1,
+   "ante": 1,
+   "round_num": 1,
+   "money": 4,
+   "hand_size": 8,
+   "joker_slots": 5,
+   "consumable_slots": 2,
+   "game_version": "1.0.1o-FULL"
+  },
+  "round": {
+   "hands_left": 5,
+   "discards_left": 3,
+   "hands_played": 0,
+   "discards_used": 0,
+   "chips": 0
+  },
+  "current_blind": {
+   "type": "small",
+   "name": "Small Blind",
+   "chips_required": 300
+  },
+  "hand_levels": {
+   "Flush House": {
+    "level": 1,
+    "chips": 140,
+    "mult": 14,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Full House": {
+    "level": 1,
+    "chips": 40,
+    "mult": 4,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Flush": {
+    "level": 1,
+    "chips": 35,
+    "mult": 4,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Pair": {
+    "level": 1,
+    "chips": 10,
+    "mult": 2,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Four of a Kind": {
+    "level": 1,
+    "chips": 60,
+    "mult": 7,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Straight Flush": {
+    "level": 1,
+    "chips": 100,
+    "mult": 8,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Straight": {
+    "level": 1,
+    "chips": 30,
+    "mult": 4,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Three of a Kind": {
+    "level": 1,
+    "chips": 30,
+    "mult": 3,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Flush Five": {
+    "level": 1,
+    "chips": 160,
+    "mult": 16,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Two Pair": {
+    "level": 1,
+    "chips": 20,
+    "mult": 2,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "Five of a Kind": {
+    "level": 1,
+    "chips": 120,
+    "mult": 12,
+    "times_played_run": 0,
+    "played_this_round": 0
+   },
+   "High Card": {
+    "level": 1,
+    "chips": 5,
+    "mult": 1,
+    "times_played_run": 0,
+    "played_this_round": 0
+   }
+  },
+  "hand": [
+   {
+    "id": 3439,
+    "key": "H_7",
+    "rank": "7",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3440,
+    "key": "S_7",
+    "rank": "7",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3396,
+    "key": "C_K",
+    "rank": "K",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3418,
+    "key": "H_8",
+    "rank": "8",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3391,
+    "key": "C_7",
+    "rank": "7",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3415,
+    "key": "H_5",
+    "rank": "5",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3427,
+    "key": "S_4",
+    "rank": "4",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3387,
+    "key": "C_3",
+    "rank": "3",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3400,
+    "key": "D_3",
+    "rank": "3",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3386,
+    "key": "C_2",
+    "rank": "2",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3441,
+    "key": "S_Q",
+    "rank": "Q",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3442,
+    "key": "H_Q",
+    "rank": "Q",
+    "suit": "H",
+    "enhancement": "m_steel",
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": false,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   }
+  ],
+  "jokers": [
+   {
+    "id": 3438,
+    "key": "j_shoot_the_moon",
+    "edition": null,
+    "debuffed": false,
+    "cost": {
+     "buy": 5,
+     "sell": 2
+    }
+   }
+  ],
+  "consumables": [],
+  "deck_remaining": 44,
+  "deck_cards": [
+   {
+    "id": 3412,
+    "key": "H_2",
+    "rank": "2",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3434,
+    "key": "S_J",
+    "rank": "J",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3399,
+    "key": "D_2",
+    "rank": "2",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3410,
+    "key": "D_Q",
+    "rank": "Q",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3437,
+    "key": "S_T",
+    "rank": "T",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3435,
+    "key": "S_K",
+    "rank": "K",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3397,
+    "key": "C_Q",
+    "rank": "Q",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3430,
+    "key": "S_7",
+    "rank": "7",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3421,
+    "key": "H_J",
+    "rank": "J",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3411,
+    "key": "D_T",
+    "rank": "T",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3393,
+    "key": "C_9",
+    "rank": "9",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3388,
+    "key": "C_4",
+    "rank": "4",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3390,
+    "key": "C_6",
+    "rank": "6",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3417,
+    "key": "H_7",
+    "rank": "7",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3408,
+    "key": "D_J",
+    "rank": "J",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3416,
+    "key": "H_6",
+    "rank": "6",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3436,
+    "key": "S_Q",
+    "rank": "Q",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3419,
+    "key": "H_9",
+    "rank": "9",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3422,
+    "key": "H_K",
+    "rank": "K",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3432,
+    "key": "S_9",
+    "rank": "9",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3403,
+    "key": "D_6",
+    "rank": "6",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3405,
+    "key": "D_8",
+    "rank": "8",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3407,
+    "key": "D_A",
+    "rank": "A",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3404,
+    "key": "D_7",
+    "rank": "7",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3392,
+    "key": "C_8",
+    "rank": "8",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3398,
+    "key": "C_T",
+    "rank": "T",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3420,
+    "key": "H_A",
+    "rank": "A",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3429,
+    "key": "S_6",
+    "rank": "6",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3428,
+    "key": "S_5",
+    "rank": "5",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3406,
+    "key": "D_9",
+    "rank": "9",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3389,
+    "key": "C_5",
+    "rank": "5",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3426,
+    "key": "S_3",
+    "rank": "3",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3409,
+    "key": "D_K",
+    "rank": "K",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3413,
+    "key": "H_3",
+    "rank": "3",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3395,
+    "key": "C_J",
+    "rank": "J",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3425,
+    "key": "S_2",
+    "rank": "2",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3424,
+    "key": "H_T",
+    "rank": "T",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3402,
+    "key": "D_5",
+    "rank": "5",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3414,
+    "key": "H_4",
+    "rank": "4",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3423,
+    "key": "H_Q",
+    "rank": "Q",
+    "suit": "H",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3433,
+    "key": "S_A",
+    "rank": "A",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3394,
+    "key": "C_A",
+    "rank": "A",
+    "suit": "C",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3401,
+    "key": "D_4",
+    "rank": "4",
+    "suit": "D",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   },
+   {
+    "id": 3431,
+    "key": "S_8",
+    "rank": "8",
+    "suit": "S",
+    "enhancement": null,
+    "edition": null,
+    "seal": null,
+    "debuffed": false,
+    "face_down": true,
+    "played_this_ante": false,
+    "stickers": {
+     "eternal": false,
+     "perishable_rounds": null,
+     "rental": false
+    }
+   }
+  ],
+  "vouchers_owned": []
+ },
+ "action": {
+  "type": "play",
+  "cards": [
+   3439,
+   3440
+  ],
+  "order_is_exact": true
+ },
+ "expected": {
+  "hand_type": "Pair",
+  "chips_scored": 852,
+  "deterministic": true,
+  "state_after": "ROUND_EVAL",
+  "money_delta": 0,
+  "jokers_after": [
+   "j_shoot_the_moon"
+  ],
+  "hand_levels_after_changed": {}
+ }
+}
