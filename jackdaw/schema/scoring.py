@@ -45,22 +45,27 @@ def _copy_card(c):
     return n
 
 
-def _prep(gs: dict[str, Any], played: list, held: list) -> dict[str, Any]:
-    """The top-level fields score_hand reads (mirrors game._handle_play_hand)."""
-    cr = gs["current_round"]
-    # scratch copy: every list/dict one level deep, so effects that append (The Hook's discards,
-    # created cards) or set flags land in the copy, never in the live game_state
-    g = {
+def _scratch(gs: dict[str, Any]) -> dict[str, Any]:
+    """Copy of game_state with every list/dict copied one level deep, so effects that append
+    (The Hook's discards, created cards) or set flags land in the copy, never in the live state."""
+    return {
         k: (list(v) if isinstance(v, list) else dict(v) if isinstance(v, dict) else v)
         for k, v in gs.items()
     }
-    g["hands_left"] = cr.get("hands_left", 0) - 1
+
+
+def _fill(g: dict[str, Any], played: list) -> None:
+    """Top-level fields score_hand reads, computed AFTER Blind.press_play exactly as
+    game._handle_play_hand does: The Tooth's money loss and The Hook's discards are already
+    applied when Bull, Bootstraps, deck-count jokers etc. read them."""
+    cr = g["current_round"]
+    g["hands_left"] = cr.get("hands_left", 0)
     g["current_round_hands_played"] = cr.get("hands_played", 0)
     g["discards_left"] = cr.get("discards_left", 0)
     g["discards_used"] = cr.get("discards_used", 0)
-    g["money"] = gs.get("dollars", 0)
-    g["deck_cards_remaining"] = len(gs.get("deck", []))
-    all_cards = gs.get("deck", []) + held + gs.get("discard_pile", []) + played
+    g["money"] = g.get("dollars", 0)
+    g["deck_cards_remaining"] = len(g.get("deck", []))
+    all_cards = g.get("deck", []) + g.get("hand", []) + g.get("discard_pile", []) + played
     g["playing_cards_count"] = len(all_cards)
     g["stone_tally"] = sum(1 for c in all_cards if c.center_key == "m_stone")
     g["steel_tally"] = sum(1 for c in all_cards if c.center_key == "m_steel")
@@ -68,8 +73,7 @@ def _prep(gs: dict[str, Any], played: list, held: list) -> dict[str, Any]:
     g["mail_card_id"] = cr.get("mail_card", {}).get("id")
     g["idol_card"] = cr.get("idol_card")
     g["ancient_suit"] = cr.get("ancient_card", {}).get("suit")
-    g["consumable_usage_tarot"] = gs.get("consumable_usage_total", {}).get("tarot", 0)
-    return g
+    g["consumable_usage_tarot"] = g.get("consumable_usage_total", {}).get("tarot", 0)
 
 
 def is_random(gs: dict[str, Any], played: list, held: list, jokers: list) -> bool:
@@ -96,7 +100,7 @@ def score_play(
     hl, blind = copy.deepcopy((gs["hand_levels"], gs["blind"]))
     rng_c = copy.copy(rng or gs["rng"])
     rng_c._state = dict(rng_c._state)
-    g = _prep(gs, played_c, held_c)
+    g = _scratch(gs)
     g.update(
         hand=held_c,
         jokers=jokers_c,
@@ -105,9 +109,13 @@ def score_play(
         rng=rng_c,
         current_round=dict(gs["current_round"]),
     )
+    # same order as game._handle_play_hand: spend the hand, Blind.press_play, then fill the
+    # fields scoring reads
+    g["current_round"]["hands_left"] = g["current_round"].get("hands_left", 0) - 1
     blind.triggered = False
     _press_play(g, blind, played_c, rng_c)
     held_c = g["hand"]  # The Hook may have removed cards
+    _fill(g, played_c)
     res = score_hand(
         played_c,
         held_c,

@@ -305,3 +305,56 @@ def test_score_distribution():
     assert d["n"] == 8 and 0 <= d["beat_fraction"] <= 1
     assert d["round_total"]["p10"] <= d["round_total"]["p90"]
     assert sim.phase() == "BLIND_SELECT"  # the real sim is untouched
+
+
+BOSSES = [
+    "bl_tooth",
+    "bl_flint",
+    "bl_plant",
+    "bl_club",
+    "bl_goad",
+    "bl_head",
+    "bl_window",
+    "bl_psychic",
+    "bl_ox",
+    "bl_arm",
+    "bl_eye",
+    "bl_mouth",
+    "bl_wall",
+    "bl_needle",
+    "bl_pillar",
+    "bl_manacle",
+    "bl_water",
+    "bl_serpent",
+    "bl_small",
+]
+STATE_JOKERS = [
+    ["j_bull", "j_greedy_joker", "j_egg", "j_swashbuckler", "j_droll"],
+    ["j_bootstraps", "j_blue_joker", "j_erosion", "j_acrobat", "j_joker"],
+    ["j_supernova", "j_card_sharp", "j_ride_the_bus", "j_runner", "j_square"],
+    ["j_abstract", "j_stencil", "j_banner", "j_mystic_summit", "j_green_joker"],
+]
+
+
+@pytest.mark.parametrize("boss", BOSSES)
+@pytest.mark.parametrize("jset", range(len(STATE_JOKERS)))
+def test_prediction_equals_engine_play(boss, jset):
+    """The arrangement's predicted score must be what the engine then scores (bug: The Tooth's
+    money loss happened after Bull read money in the preview)."""
+    from jackdaw.engine.blind import Blind
+    from jackdaw.engine.card_factory import create_joker
+
+    sim = SchemaSim()
+    sim.reset(f"PRED{jset}", "b_blue", 1)
+    sim.step({"type": "select_blind"})
+    sim.gs["blind"] = Blind.create(boss, 1)
+    sim.gs["dollars"] = 23
+    sim.gs["jokers"] = [create_joker(k) for k in STATE_JOKERS[jset]]
+    sim._exit()
+    for n in (5, 3, 1):
+        if sim.phase() != "SELECTING_HAND":
+            break
+        cards = [c.sort_id for c in sim.gs["hand"][:n]]
+        _, events = sim.step({"type": "play", "cards": cards})
+        score = next(e for e in events if e["type"] == "score")
+        assert score["predicted"] == score["total"], (boss, STATE_JOKERS[jset], n)
