@@ -68,6 +68,9 @@ def build(rng, held_mode=False):
     return sim
 
 
+MODE = None  # None = production default (exhaustive when small); False = force hill-climbing
+
+
 def main(cases, held_mode=False):
     rng = random.Random(7)
     agree = total = 0
@@ -79,7 +82,7 @@ def main(cases, held_mode=False):
         held = [c for c in sim.gs["hand"] if c not in played]
         for obj in ("max", "min"):
             t = time.perf_counter()
-            hc = scoring.arrange(sim.gs, played, held, sim.gs["jokers"], obj, exhaustive=False)
+            hc = scoring.arrange(sim.gs, played, held, sim.gs["jokers"], obj, exhaustive=MODE)
             t_hc += time.perf_counter() - t
             t = time.perf_counter()
             ex = scoring.arrange(sim.gs, played, held, sim.gs["jokers"], obj, exhaustive=True)
@@ -92,7 +95,7 @@ def main(cases, held_mode=False):
                 gaps.append((obj, a, b, abs(a - b) / max(abs(b), 1)))
     print(
         f"{'held-joker builds' if held_mode else 'many-joker builds'}: agree {agree}/{total}; "
-        f"hill-climb {1000 * t_hc / total:.0f} ms/arrangement, "
+        f"search {1000 * t_hc / total:.0f} ms/arrangement, "
         f"exhaustive {1000 * t_ex / total:.0f} ms"
     )
     for g in sorted(gaps, key=lambda g: -g[3])[:10]:
@@ -101,5 +104,7 @@ def main(cases, held_mode=False):
 
 if __name__ == "__main__":
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 40
-    main(n)
-    main(n, held_mode=True)
+    for MODE in (None, False):
+        print("default search" if MODE is None else "forced hill-climbing")
+        main(n)
+        main(n, held_mode=True)
