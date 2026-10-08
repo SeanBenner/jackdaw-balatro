@@ -2646,7 +2646,9 @@ def _apply_consumable_result(
         edition = ae.get("edition")
         if target and edition:
             was_negative = bool(target.edition and target.edition.get("negative"))
-            target.edition = edition
+            # set_edition fills in the scoring values (Polychrome x1.5, Holo +10, Foil +50);
+            # assigning the bare flag left editions from consumables scoring nothing.
+            target.set_edition(edition)
             # card.lua:set_edition — going Negative while in play raises
             # the owning area's slot cap.
             if edition.get("negative") and not was_negative:
