@@ -351,6 +351,12 @@ def initialize_run(
     # -----------------------------------------------------------------------
     gs.setdefault("jokers", [])
     gs.setdefault("consumables", [])
+    # Starting consumables (Magic Deck's Fools, Ghost Deck's Hex, challenges). back.lua adds them
+    # in an event after the deck is built, with forced keys (no RNG), so their ids follow the deck's.
+    from jackdaw.engine.card_factory import create_consumable
+
+    for key in gs.get("starting_consumables", []):
+        gs["consumables"].append(create_consumable(key))
     gs.setdefault("hand", [])
     gs.setdefault("discard_pile", [])
 
