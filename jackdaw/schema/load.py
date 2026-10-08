@@ -163,6 +163,19 @@ def build_state(snapshot: dict[str, Any]) -> tuple[dict[str, Any], str]:
         {"key": k, "result": None, "blind": "loaded"} for k in o.get("tags_held", [])
     ]
 
+    # -- boss history and per-round boss memory ------------------------------------------------
+    bu = o.get("bosses_used")
+    if bu is not None:
+        # recorders may write an empty table as [] (Lua can't tell an empty dict from a list)
+        gs["bosses_used"] = {k: int(v) for k, v in bu.items() if v} if isinstance(bu, dict) else {}
+    bs = o.get("boss_state") or {}
+    if gs.get("blind") is not None:
+        if bs.get("only_hand"):
+            gs["blind"].only_hand = bs["only_hand"]  # The Mouth
+        if bs.get("hands_used"):
+            # The Eye. The real game lists every hand with true/false; only true means used.
+            gs["blind"].hands_used = {k: True for k, v in bs["hands_used"].items() if v}
+
     # -- hidden -------------------------------------------------------------------------------
     if hidden.get("rng_state"):
         gs["rng"] = pickle.loads(base64.b64decode(hidden["rng_state"]))

@@ -24,6 +24,16 @@ PHASE = {
     GamePhase.GAME_OVER: "GAME_OVER",
 }
 BLIND_TYPES = (("Small", "small"), ("Big", "big"), ("Boss", "boss"))
+
+
+def _boss_state(gs: dict[str, Any]) -> dict[str, Any]:
+    """Per-round boss memory the blind list can't express (The Mouth's locked hand, The Eye's used hands)."""
+    b = gs.get("blind")
+    if b is None:
+        return {"only_hand": None, "hands_used": None}
+    used = getattr(b, "hands_used", None) or {}
+    return {"only_hand": getattr(b, "only_hand", None),
+            "hands_used": {k: True for k, v in used.items() if v} or None}
 HAND_ORDER = [
     "Flush Five",
     "Flush House",
@@ -240,6 +250,10 @@ def make_snapshot(
             "vouchers_owned": sorted(k for k, v in (gs.get("used_vouchers") or {}).items() if v),
             "tags_held": _tags_held(gs),
             "score_preview": None,  # per selection: SchemaSim.preview(card_ids)
+            # boss blinds seen this run ({key: times}); a boss can't return until every
+            # eligible boss has appeared, so this tells which bosses are still ahead
+            "bosses_used": {k: v for k, v in (gs.get("bosses_used") or {}).items() if v},
+            "boss_state": _boss_state(gs),
         },
         "hidden": {
             # jackdaw draws from the end of the deck list
