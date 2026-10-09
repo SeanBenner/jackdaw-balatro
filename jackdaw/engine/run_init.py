@@ -249,12 +249,16 @@ def initialize_run(
         sp["dollars"] += mutations["dollars_delta"]
     if "ante_scaling" in mutations:
         sp["ante_scaling"] = mutations["ante_scaling"]
+    # Green Deck. back.lua sets these on G.GAME.modifiers, which is where the cash-out
+    # (economy.calculate_round_earnings) reads them; they used to land only at the top level,
+    # so Green Deck runs paid $1 per hand, nothing per discard, and interest.
+    mods = gs.setdefault("modifiers", {})
     if "money_per_hand" in mutations:
-        gs["money_per_hand"] = mutations["money_per_hand"]
+        gs["money_per_hand"] = mods["money_per_hand"] = mutations["money_per_hand"]
     if "money_per_discard" in mutations:
-        gs["money_per_discard"] = mutations["money_per_discard"]
+        gs["money_per_discard"] = mods["money_per_discard"] = mutations["money_per_discard"]
     if "no_interest" in mutations:
-        gs["no_interest"] = True
+        gs["no_interest"] = mods["no_interest"] = True
     if "spectral_rate" in mutations:
         gs["spectral_rate"] = mutations["spectral_rate"]
     if "reroll_discount" in mutations:
