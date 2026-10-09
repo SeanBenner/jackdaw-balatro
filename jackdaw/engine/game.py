@@ -1988,7 +1988,18 @@ def _joker_end_of_round_effects(gs: dict[str, Any]) -> dict[str, Any]:
                         ante=gs.get("round_resets", {}).get("ante", 1),
                     )
 
-    process_round_end_cards(jokers, gs)
+    ended = process_round_end_cards(jokers, gs)
+    # A joker that perishes this round is debuffed before the cash-out rows are built
+    # (evaluate_round runs after end_round's calculate_perishable), so its dollar bonus
+    # (Cloud 9, Golden Joker, ...) isn't paid. on_end_of_round counted it; take it back out.
+    if getattr(ended, "perished", None):
+        from jackdaw.engine.jokers import calc_dollar_bonus
+
+        for j in ended.perished:
+            j.debuff = False
+            lost = calc_dollar_bonus(j, game_snap)
+            j.debuff = True
+            eor["dollars_earned"] = eor.get("dollars_earned", 0) - lost
     return eor
 
 
