@@ -490,6 +490,7 @@ def _legal_pack_opening(gs: dict[str, Any]) -> list[Action]:
 
     actions.append(SkipPack())
     actions.extend(_sellable(gs))           # e.g. sell a joker to make room for the one in the pack
+    actions.extend(_usable_consumables(gs))  # e.g. Hex while only the joker it should hit is held
     return actions
 
 

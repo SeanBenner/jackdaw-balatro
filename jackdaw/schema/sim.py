@@ -183,7 +183,8 @@ class SchemaSim:
             types["pack_skip"] = {}
         if ph != GamePhase.GAME_OVER:
             usable = [cons[a.card_index] for a in engine_legal if isinstance(a, A.UseConsumable)]
-            if usable and ph in (GamePhase.SELECTING_HAND, GamePhase.SHOP, GamePhase.BLIND_SELECT):
+            if usable and ph in (GamePhase.SELECTING_HAND, GamePhase.SHOP, GamePhase.BLIND_SELECT,
+                               GamePhase.PACK_OPENING):
                 types["use_consumable"] = {
                     "card": [c.sort_id for c in usable],
                     "targets": {c.sort_id: targets_for(c) for c in usable},
