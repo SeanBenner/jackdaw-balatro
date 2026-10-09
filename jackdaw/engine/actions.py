@@ -364,6 +364,7 @@ def _legal_blind_select(gs: dict[str, Any]) -> list[Action]:
 
     # Consumables usable during blind select
     actions.extend(_usable_consumables(gs))
+    actions.extend(_sellable(gs))
     return actions
 
 
@@ -389,8 +390,9 @@ def _legal_selecting_hand(gs: dict[str, Any]) -> list[Action]:
         for i in range(len(hand) - 1):
             actions.append(SwapHandRight(idx=i))
 
-    # Consumables usable during hand selection
+    # Consumables usable during hand selection; cards can be sold mid-blind
     actions.extend(_usable_consumables(gs))
+    actions.extend(_sellable(gs))
 
     # Swap jokers
     jokers: list[Card] = gs.get("jokers", [])
@@ -433,14 +435,7 @@ def _legal_shop(gs: dict[str, Any]) -> list[Action]:
                 continue  # No room — agent must use/sell a consumable first
         actions.append(BuyCard(shop_index=i))
 
-    # Sell jokers (non-eternal)
-    for i, joker in enumerate(jokers):
-        if not joker.eternal:
-            actions.append(SellCard(area="jokers", card_index=i))
-
-    # Sell consumables
-    for i in range(len(consumables)):
-        actions.append(SellCard(area="consumables", card_index=i))
+    actions.extend(_sellable(gs))
 
     # Use owned consumables
     actions.extend(_usable_consumables(gs))
@@ -481,29 +476,36 @@ def _legal_pack_opening(gs: dict[str, Any]) -> list[Action]:
     actions: list[Action] = []
     pack_cards: list[Card] = gs.get("pack_cards", [])
     remaining: int = gs.get("pack_choices_remaining", 0)
-    pack_type: str = gs.get("pack_type", "")
 
-    # Spectral packs: balatrobot cannot handle Spectral card highlighting
-    # via RPC, so only SkipPack is offered.  RNG stays in sync because
-    # the pack is generated normally — we just force the agent to skip.
-    if remaining > 0 and pack_type != "Spectral":
-        # Vanilla gate (button_callbacks.lua:2112-2113): a Joker in a pack
-        # is selectable only if joker slots have room or it is negative.
-        jokers: list[Card] = gs.get("jokers", [])
-        joker_limit: int = gs.get("joker_slots", 5)
-        board_full = len(jokers) >= joker_limit
+    # Spectral packs used to offer only SkipPack (a BalatroBot RPC limitation). The engine
+    # handles spectral picks, and real players (and replays of their runs) take them.
+    if remaining > 0:
+        # Same gate the PickPackCard executor applies: a joker needs a free slot (unless
+        # Negative), a consumable must be usable on the dealt hand.
+        from jackdaw.engine.consumables import pack_pick_block_reason
+
         for i, card in enumerate(pack_cards):
-            if board_full:
-                ability = getattr(card, "ability", None) or {}
-                edition = getattr(card, "edition", None) or {}
-                is_joker = ability.get("set", "") == "Joker"
-                negative = bool(edition.get("negative")) if isinstance(edition, dict) else False
-                if is_joker and not negative:
-                    continue
-            actions.append(PickPackCard(card_index=i))
+            if pack_pick_block_reason(card, gs) is None:
+                actions.append(PickPackCard(card_index=i))
 
     actions.append(SkipPack())
+    actions.extend(_sellable(gs))           # e.g. sell a joker to make room for the one in the pack
     return actions
+
+
+def _sellable(gs: dict[str, Any]) -> list[Action]:
+    """Sell actions for owned non-eternal jokers and all consumables.
+
+    Selling isn't shop-only in the game (Card:can_sell_card has no state gate; see
+    game._handle_sell_card), so it's offered in every phase the handler accepts.
+    """
+    out: list[Action] = []
+    for i, joker in enumerate(gs.get("jokers", []) or []):
+        if not joker.eternal:
+            out.append(SellCard(area="jokers", card_index=i))
+    for i in range(len(gs.get("consumables", []) or [])):
+        out.append(SellCard(area="consumables", card_index=i))
+    return out
 
 
 # ---------------------------------------------------------------------------
