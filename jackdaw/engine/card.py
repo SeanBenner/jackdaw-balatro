@@ -404,12 +404,22 @@ class Card:
         """Set the card's seal."""
         self.seal = seal
 
+    def _sticker_compat(self, kind: str) -> bool:
+        """``eternal_compat`` / ``perishable_compat`` of this card's joker prototype (True otherwise)."""
+        from jackdaw.engine.data.prototypes import JOKERS
+
+        proto = JOKERS.get(getattr(self, "center_key", "") or "")
+        return bool(getattr(proto, f"{kind}_compat", True)) if proto is not None else True
+
     def set_eternal(self, eternal: bool) -> None:
-        self.eternal = eternal
+        """card.lua Card:set_eternal: only jokers that allow it (not Gros Michel, Turtle Bean, Ice
+        Cream, ...) and never together with Perishable."""
+        self.eternal = bool(eternal) and self._sticker_compat("eternal") and not getattr(self, "perishable", False)
 
     def set_perishable(self, perishable: bool) -> None:
-        self.perishable = perishable
-        if perishable:
+        """card.lua Card:set_perishable: only jokers that allow it, never together with Eternal."""
+        self.perishable = bool(perishable) and self._sticker_compat("perishable") and not self.eternal
+        if self.perishable:
             self.perish_tally = 5
 
     def set_rental(self, rental: bool) -> None:

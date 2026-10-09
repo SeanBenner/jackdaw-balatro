@@ -211,8 +211,9 @@ class TestAllModifiers:
         card = _playing_card("Hearts", "King", enhancement="m_glass")
         card.set_edition({"polychrome": True})
         card.set_seal("Purple")
-        card.set_eternal(True)
-        card.set_perishable(True)
+        # Eternal + Perishable can't co-occur in the game (set_eternal/set_perishable refuse it);
+        # set the fields directly so every serializer field is still covered.
+        card.eternal, card.perishable, card.perish_tally = True, True, 5
         card.set_rental(True)
         card.set_debuff(True)
 
