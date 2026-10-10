@@ -140,11 +140,12 @@ def score_play(
 
 
 def score_dist(
-    gs: dict[str, Any], played: list, held: list, jokers: list, samples: int | None = None
+    gs: dict[str, Any], played: list, held: list, jokers: list, samples: int | None = None,
+    need: float | None = None,
 ) -> dict[str, Any]:
     """Score, and if randomness is involved, sample it (expected/min/max over ``samples`` draws,
     default SAMPLES). Draws use fixed per-index streams, so candidates are compared on common
-    random numbers."""
+    random numbers. With ``need``, also the fraction of draws reaching it (p_reach)."""
     base = score_play(gs, played, held, jokers)
     if not is_random(gs, played, held, jokers):
         return {
@@ -159,7 +160,7 @@ def score_dist(
         score_play(gs, played, held, jokers, rng=PseudoRandom(f"{seed}#preview{k}"))["total"]
         for k in range(samples or SAMPLES)
     ]
-    return {
+    out = {
         **base,
         "deterministic": False,
         "expected": sum(totals) / len(totals),
@@ -167,6 +168,9 @@ def score_dist(
         "max": max(totals),
         "samples": len(totals),
     }
+    if need is not None:
+        out["p_reach"] = sum(t >= need for t in totals) / len(totals)
+    return out
 
 
 # --------------------------------------------------------------------------- arrangement search
