@@ -1200,7 +1200,9 @@ def _handle_buy_card(gs: dict[str, Any], idx: int) -> dict[str, Any]:
     if card_set == "Joker" and not negative:
         if len(gs.get("jokers", [])) >= gs.get("joker_slots", 5):
             raise IllegalActionError("No room for joker")
-    elif card_set in ("Tarot", "Planet", "Spectral") and not negative:
+    elif card_set in ("Tarot", "Planet", "Spectral") and not negative and not gs.get("_buy_and_use"):
+        # "Buy and Use" skips the space check: the card is used straight from the shop
+        # (button_callbacks.lua:2407 checks space only when the button isn't buy_and_use)
         if len(gs.get("consumables", [])) >= gs.get("consumable_slots", 2):
             raise IllegalActionError("No room for consumable")
 
@@ -1955,6 +1957,10 @@ def _joker_end_of_round_effects(gs: dict[str, Any]) -> dict[str, Any]:
     # Dollars are NOT banked here: vanilla pays the whole round total in
     # one ease_dollars at the cash-out press, with interest computed on
     # pre-payout money.  The value flows to calculate_round_earnings.
+    # the jokers as they stood when the loop started: a joker removed by its own end_of_round effect
+    # (Gros Michel / Cavendish going extinct) is removed by a queued event in vanilla, so it is still
+    # in the end_round loop for calculate_rental (state_events.lua:99-110) and still pays its rental
+    at_round_end = list(jokers)
     for removed_joker in eor.get("jokers_removed", []):
         if removed_joker in jokers:
             jokers.remove(removed_joker)
@@ -1995,7 +2001,7 @@ def _joker_end_of_round_effects(gs: dict[str, Any]) -> dict[str, Any]:
                         ante=gs.get("round_resets", {}).get("ante", 1),
                     )
 
-    ended = process_round_end_cards(jokers, gs)
+    ended = process_round_end_cards(at_round_end, gs)
     # A joker that perishes this round is debuffed before the cash-out rows are built
     # (evaluate_round runs after end_round's calculate_perishable), so its dollar bonus
     # (Cloud 9, Golden Joker, ...) isn't paid. on_end_of_round counted it; take it back out.
@@ -2191,6 +2197,7 @@ def _round_won(gs: dict[str, Any]) -> None:
         game_state=gs,
         rng=rng,
         joker_dollars=eor.get("dollars_earned", 0),
+        rental_paid=True,
     )
     gs["round_earnings"] = earnings
 
