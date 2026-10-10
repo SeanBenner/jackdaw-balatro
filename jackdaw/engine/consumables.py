@@ -956,7 +956,11 @@ def _roll_card_spec(
 
     Returns ``{'rank': str, 'suit': str, 'enhancement': str}``.
     """
-    rank_code, _ = rng.element(rank_pool, rng.seed(rank_seed))
+    if len(rank_pool) == 1:
+        # Grim sets _rank = 'A' outright; only the suit is rolled (card.lua:1323-1324)
+        rank_code = rank_pool[0]
+    else:
+        rank_code, _ = rng.element(rank_pool, rng.seed(rank_seed))
     suit_code, _ = rng.element(list(_SUIT_CODE), rng.seed(suit_seed))
     enhancement, _ = rng.element(_get_enhanced_pool(), rng.seed("spe_card"))
     return {

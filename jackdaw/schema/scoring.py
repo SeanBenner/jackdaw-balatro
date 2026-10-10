@@ -253,6 +253,7 @@ def arrange(
     exhaustive: bool | None = None,
 ) -> dict[str, Any]:
     """Best (played order, held order, joker order) for the objective, by expected score.
+    ``objective="as_is"`` keeps the given orders (replaying a recorded game).
 
     1. Lists whose order can't change the score are left alone: no jokers and no +mult/xmult card
        mix means nothing to search; otherwise the played and joker lists are probed (every
@@ -266,8 +267,8 @@ def arrange(
        SAMPLES draws for the reported expected/min/max.
 
     ``exhaustive=True`` skips the probes and searches every list fully (used by tests)."""
-    if objective not in ("max", "min"):
-        raise ValueError("objective must be 'max' or 'min'")
+    if objective not in ("max", "min", "as_is"):
+        raise ValueError("objective must be 'max', 'min' or 'as_is'")
     cache: dict[tuple, dict] = {}
     held_matters = _held_relevant(held, jokers)
 
@@ -294,6 +295,9 @@ def arrange(
         }
 
     p0, h0, j0 = list(played), list(held), list(jokers)
+    if objective == "as_is":
+        # replaying a recorded game: the order on screen (hand order, joker order) is what scored
+        return result(p0, h0, j0, 1, True)
     if not exhaustive and not jokers and not _card_order_matters(played):
         return result(p0, h0, j0, 1, True)
 

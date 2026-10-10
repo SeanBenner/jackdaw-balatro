@@ -242,6 +242,14 @@ class JokerContext:
                         skips=skips,
                     ),
                 )
+        # Pareidolia makes every card a face card for every check (Card:is_face reads
+        # next(find_joker('Pareidolia')), card.lua:964). Callers that didn't pass the flag
+        # (the discard contexts: Faceless Joker) get it from the jokers held.
+        if not self.pareidolia and self.jokers:
+            self.pareidolia = any(
+                getattr(j, "center_key", None) == "j_pareidolia" and not getattr(j, "debuff", False)
+                for j in self.jokers
+            )
 
 
 # ---------------------------------------------------------------------------

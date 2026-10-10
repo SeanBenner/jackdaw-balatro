@@ -218,6 +218,10 @@ class SchemaSim:
                 self._engine(A.Discard(tuple(self._hand_idx(action["cards"]))))
             elif t == "rearrange_jokers":
                 gs["jokers"] = self._reorder(gs.get("jokers", []), action["order"])
+            elif t == "rearrange_hand":
+                # the hand's on-screen order (the player's sort or drags); The Death copies the
+                # rightmost selected card, by position
+                gs["hand"] = self._reorder(gs.get("hand", []), action["order"])
             elif t == "use_consumable":
                 i = self._index(gs.get("consumables", []), action["card"])
                 self._engine(A.UseConsumable(i, self._targets(action)))
@@ -391,7 +395,7 @@ class SchemaSim:
     def _reorder(cards: list, order: list[int]) -> list:
         by_id = {c.sort_id: c for c in cards}
         if sorted(order) != sorted(by_id):
-            raise SchemaError("order must list every joker id exactly once")
+            raise SchemaError("order must list every card id exactly once")
         return [by_id[i] for i in order]
 
     def _buy(self, card_id: int) -> None:

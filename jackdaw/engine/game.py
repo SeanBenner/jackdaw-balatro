@@ -1220,7 +1220,9 @@ def _handle_buy_card(gs: dict[str, Any], idx: int) -> dict[str, Any]:
         gs.setdefault("consumables", []).append(card)
         card.add_to_deck(gs)
     else:
-        gs.setdefault("deck", []).append(card)
+        # CardArea:emplace puts a deck card at index 1, the pile's bottom (cardarea.lua:33);
+        # draws take the top (the list's end)
+        gs.setdefault("deck", []).insert(0, card)
         added_playing_card = True
 
     # Astronomer joining the board runs the all-cards set_cost pass
@@ -1674,8 +1676,10 @@ def _handle_pick_pack_card(
             _all_cards_set_cost_pass(gs)
 
     else:
-        # Standard pack: playing card → add to deck
-        gs.setdefault("deck", []).append(card)
+        # Standard pack: playing card → add to deck, at the bottom (G.deck:emplace inserts at
+        # index 1, cardarea.lua:33; draws take the list's end). Found verifying a recorded run:
+        # the picked card was drawn first into the next Arcana pack's hand.
+        gs.setdefault("deck", []).insert(0, card)
         # Fire playing_card_added joker context (Hologram)
         _fire_shop_joker_context(gs, playing_card_added=True, cards=[card])
 
@@ -2572,6 +2576,13 @@ def _apply_consumable_result(
             target.seal = source.seal
             if hasattr(source, "center_key") and hasattr(target, "set_ability"):
                 target.set_ability(source.center_key)
+            # copy_card then copies every ability field (common_events.lua:2161): Hiker's
+            # perma_bonus, Lucky/Glass state ... Found verifying a recorded run: a Death copy of a
+            # card Hiker had boosted scored 5 chips short.
+            if isinstance(getattr(source, "ability", None), dict) and isinstance(getattr(target, "ability", None), dict):
+                import copy as _copy
+                for k, v in source.ability.items():
+                    target.ability[k] = _copy.deepcopy(v)
 
     # e. Destroy playing cards
     if getattr(result, "destroy", None):
@@ -2754,7 +2765,7 @@ def _resolve_create_descriptors(gs: dict[str, Any], descriptors: list[dict[str, 
                 if gs.get("phase") == GamePhase.SELECTING_HAND:
                     gs.setdefault("hand", []).append(card)
                 else:
-                    deck.append(card)
+                    deck.insert(0, card)          # the pile's bottom (cardarea.lua:33)
 
     # Re-sort hand if any cards were added during SELECTING_HAND
     if gs.get("phase") == GamePhase.SELECTING_HAND:

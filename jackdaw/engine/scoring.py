@@ -9,6 +9,8 @@ pipeline from ``state_events.lua:571-1065``.
 
 from __future__ import annotations
 
+import dataclasses
+
 import math
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
@@ -802,7 +804,11 @@ def score_hand(
             hand_chips += edition.get("chip_mod", 0)
             mult += edition.get("mult_mod", 0)
 
-        # 9b: Main joker effect
+        # 9b: Main joker effect. Money earned earlier in this hand (Gold Seals, Golden Ticket ...)
+        # already counts: Bull and Bootstraps read G.GAME.dollars + G.GAME.dollar_buffer
+        # (card.lua:3936, 4046).
+        if dollars and snapshot is not None:
+            _shared["game"] = dataclasses.replace(snapshot, money=snapshot.money + dollars)
         main_ctx = JokerContext(joker_main=True, **_shared)
         result = calculate_joker(joker, main_ctx)
         if result:

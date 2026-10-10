@@ -966,6 +966,17 @@ class TestFaceless:
         assert result is not None
         assert result.dollars == 5
 
+    def test_pareidolia_held_makes_any_discard_count(self):
+        """Pareidolia held: every card is a face card, also in the discard context (which
+        doesn't pass the flag). Found verifying a recorded Red Deck run: $5 per discard missing."""
+        joker = _joker_card("j_faceless", extra={"dollars": 5, "faces": 3})
+        pareidolia = _joker_card("j_pareidolia")
+        discarded = [_playing_card("Hearts", "2"), _playing_card("Spades", "5"), _playing_card("Clubs", "9")]
+        ctx = JokerContext(discard=True, other_card=discarded[-1], full_hand=discarded,
+                           jokers=[joker, pareidolia])
+        result = calculate_joker(joker, ctx)
+        assert result is not None and result.dollars == 5
+
     def test_two_face_cards_no_effect(self):
         joker = _joker_card("j_faceless", extra={"dollars": 5, "faces": 3})
         discarded = [
