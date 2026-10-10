@@ -1562,3 +1562,32 @@ class TestRaisedFistTieBreak:
         ctx_h7 = JokerContext(individual=True, cardarea="hand", other_card=h7, held_cards=held)
         r_h7 = calculate_joker(fist, ctx_h7)
         assert r_h7 is None or not getattr(r_h7, "h_mult", 0)
+
+
+class TestBlueprintCopiesFromRecordedRuns:
+    """Found verifying a recorded Red Deck run (seed 492MB2I9): Blueprint left of Burnt Joker
+    levels the discarded hand twice; Blueprint left of Trading Card doesn't pay twice."""
+
+    def _discard(self, n):
+        return [_playing_card("Hearts", "7"), _playing_card("Spades", "7")][:n]
+
+    def test_burnt_fires_in_pre_discard_and_blueprint_copies_it(self):
+        from jackdaw.engine.jokers import GameSnapshot
+        bp, burnt = _joker_card("j_blueprint"), _joker_card("j_burnt")
+        cards = self._discard(2)
+        ctx = JokerContext(pre_discard=True, full_hand=cards, jokers=[bp, burnt],
+                           game=GameSnapshot(discards_used=0))
+        assert calculate_joker(burnt, ctx).level_up
+        assert calculate_joker(bp, ctx).level_up
+        ctx2 = JokerContext(pre_discard=True, full_hand=cards, jokers=[bp, burnt],
+                            game=GameSnapshot(discards_used=1))
+        assert calculate_joker(burnt, ctx2) is None
+
+    def test_blueprint_does_not_copy_trading_card(self):
+        from jackdaw.engine.jokers import GameSnapshot
+        bp, trading = _joker_card("j_blueprint"), _joker_card("j_trading", extra=3)
+        cards = self._discard(1)
+        ctx = JokerContext(discard=True, other_card=cards[0], full_hand=cards, jokers=[bp, trading],
+                           game=GameSnapshot(discards_used=0))
+        assert calculate_joker(trading, ctx).dollars == 3
+        assert calculate_joker(bp, ctx) is None

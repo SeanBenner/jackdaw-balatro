@@ -1368,7 +1368,7 @@ def _trading(card: Card, ctx: JokerContext) -> JokerResult | None:
 
     Source: card.lua:2802. Returns extra={'destroy': True} to signal destruction.
     """
-    if ctx.discard and ctx.full_hand is not None:
+    if ctx.discard and ctx.full_hand is not None and not ctx.blueprint:   # Blueprint can't copy it
         if ctx.game.discards_used <= 0 and len(ctx.full_hand) == 1:
             return JokerResult(
                 dollars=card.ability.get("extra", 3),
@@ -2591,12 +2591,13 @@ def _mr_bones(card: Card, ctx: JokerContext) -> JokerResult | None:
 def _burnt(card: Card, ctx: JokerContext) -> JokerResult | None:
     """Burnt Joker: level up discard hand on first discard of round.
 
-    Source: card.lua:2749. Fires in discard context when discards_used <= 0.
+    Source: card.lua:2749. Fires once in the pre_discard context when discards_used <= 0,
+    and Blueprint / Brainstorm copy it (no blueprint check in the source): found verifying a
+    recorded run where Blueprint + Burnt levelled Pair twice per first discard.
     """
-    if ctx.discard and not ctx.blueprint and not ctx.hook:
-        if ctx.game.discards_used <= 0 and ctx.other_card is not None:
-            if ctx.full_hand and ctx.other_card is ctx.full_hand[-1]:
-                return JokerResult(level_up=True)
+    if ctx.pre_discard and not ctx.hook:
+        if ctx.game.discards_used <= 0:
+            return JokerResult(level_up=True)
     return None
 
 
