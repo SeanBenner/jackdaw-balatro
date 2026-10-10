@@ -235,7 +235,12 @@ class SchemaSim:
             elif t == "buy":
                 self._buy(action["card"])
             elif t == "buy_and_use":
-                self._buy(action["card"])
+                gs["_buy_and_use"] = True               # no room needed: it never lands in the slots
+                try:
+                    self._buy(action["card"])
+                finally:
+                    self.gs.pop("_buy_and_use", None)
+                gs = self.gs
                 cons = gs.get("consumables", [])
                 self._engine(
                     A.UseConsumable(self._index(cons, action["card"]), self._targets(action))

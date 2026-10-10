@@ -123,6 +123,7 @@ def calculate_round_earnings(
     rng: PseudoRandom | None = None,
     *,
     joker_dollars: int | None = None,
+    rental_paid: bool = False,
 ) -> RoundEarnings:
     """Compute end-of-round earnings for a beaten blind.
 
@@ -178,7 +179,10 @@ def calculate_round_earnings(
     # calculate_rental() → ease_dollars(-G.GAME.rental_rate) per rental joker
     # Fires BEFORE evaluate_round; effective_money is used for interest.
     # ------------------------------------------------------------------
-    rental_cost = sum(rental_rate for j in jokers if not j.debuff and j.ability.get("rental"))
+    # rental_paid: the round-end loop (round_lifecycle.process_round_end_cards) already took it from
+    # `money`, like vanilla's calculate_rental, so it isn't subtracted twice
+    rental_cost = 0 if rental_paid else sum(
+        rental_rate for j in jokers if not j.debuff and j.ability.get("rental"))
     effective_money = money - rental_cost
 
     # ------------------------------------------------------------------
