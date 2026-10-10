@@ -251,9 +251,11 @@ def arrange(
     objective: str = "max",
     *,
     exhaustive: bool | None = None,
+    fixed_jokers: bool = False,
 ) -> dict[str, Any]:
     """Best (played order, held order, joker order) for the objective, by expected score.
-    ``objective="as_is"`` keeps the given orders (replaying a recorded game).
+    ``objective="as_is"`` keeps the given orders (replaying a recorded game). ``fixed_jokers``
+    searches the card orders only and keeps the joker order (a policy that orders its own jokers).
 
     1. Lists whose order can't change the score are left alone: no jokers and no +mult/xmult card
        mix means nothing to search; otherwise the played and joker lists are probed (every
@@ -302,7 +304,7 @@ def arrange(
         return result(p0, h0, j0, 1, True)
 
     # which lists can change the score?
-    free = {"p": len(played) > 1, "h": held_matters, "j": len(jokers) > 1}
+    free = {"p": len(played) > 1, "h": held_matters, "j": len(jokers) > 1 and not fixed_jokers}
     if not exhaustive:
         base = ev(p0, h0, j0)["expected"]
         # held order is already gated on a held-card joker being present and is always searched.
