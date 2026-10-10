@@ -233,6 +233,7 @@ def get_action_mask(game_state: dict[str, Any]) -> ActionMask:
         _mask_sell_jokers(type_mask, entity_masks, jokers)
         _mask_sell_consumables(type_mask, entity_masks, consumables)
         _mask_consumables(type_mask, entity_masks, game_state)
+        _mask_joker_swaps(type_mask, entity_masks, jokers)
 
     # --- SELECTING_HAND ---
     elif phase == GamePhase.SELECTING_HAND:
@@ -303,6 +304,10 @@ def get_action_mask(game_state: dict[str, Any]) -> ActionMask:
         type_mask[ActionType.SkipPack] = True
         _mask_sell_jokers(type_mask, entity_masks, jokers)
         _mask_sell_consumables(type_mask, entity_masks, consumables)
+        # Held consumables can be used and jokers moved while a pack is open (the engine allows
+        # it: _handle_use_consumable accepts PACK_OPENING), e.g. The Fool or a tarot on the dealt hand
+        _mask_consumables(type_mask, entity_masks, game_state)
+        _mask_joker_swaps(type_mask, entity_masks, jokers)
 
     return ActionMask(type_mask, card_mask, entity_masks, max_card_select, min_card_select)
 
@@ -392,15 +397,20 @@ def _mask_consumables(
 
     mask = np.zeros(len(consumables), dtype=bool)
     for i, card in enumerate(consumables):
-        if can_use_consumable(
-            card,
-            hand_cards=hand,
-            jokers=jokers,
-            consumables=consumables,
-            consumable_limit=consumable_limit,
-            joker_limit=joker_limit,
-        ):
+        kw = dict(hand_cards=hand, jokers=jokers, consumables=consumables,
+                  consumable_limit=consumable_limit, joker_limit=joker_limit, game_state=gs)
+        if can_use_consumable(card, **kw):
             mask[i] = True
+            continue
+        # Targeting consumables (Devil, Hanged Man, Death, Aura...) need cards highlighted, which
+        # the agent chooses as part of the action (card_target). Usable when the hand can supply
+        # enough targets: checked with the first cards that qualify standing in for the selection.
+        # Without this they were never usable from the consumable slots, only as pack picks.
+        lo, hi, needs = get_consumable_target_info(card)
+        if needs and hand:
+            pool = [c for c in hand if not c.edition] if card.center_key == "c_aura" else list(hand)
+            if len(pool) >= max(lo, 1) and can_use_consumable(card, highlighted=pool[:max(lo, 1)], **kw):
+                mask[i] = True
 
     if mask.any():
         type_mask[ActionType.UseConsumable] = True
