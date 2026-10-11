@@ -2655,6 +2655,8 @@ def _apply_consumable_result(
                 if gs.get("phase") == GamePhase.SELECTING_HAND:
                     gs.setdefault("hand", []).append(new_card)
                     _sort_hand_desc(gs.get("hand", []))
+                elif gs.get("pack_hand"):
+                    _emplace_into_pack_hand(gs, new_card)
                 else:
                     deck_list.append(new_card)
                 continue
@@ -2705,6 +2707,12 @@ def _apply_consumable_result(
         gs["hand_size"] = gs.get("hand_size", 8) + result.hand_size_mod
 
 
+def _emplace_into_pack_hand(gs: dict[str, Any], card: Any) -> None:
+    """A card created while a pack's dealt hand is out joins that hand, so it returns to the deck with it."""
+    gs.setdefault("hand", []).append(card)
+    gs["pack_hand"].append(card)
+
+
 def _resolve_create_descriptors(gs: dict[str, Any], descriptors: list[dict[str, Any]]) -> None:
     """Resolve card creation descriptors from ConsumableResult.create.
 
@@ -2728,6 +2736,7 @@ def _resolve_create_descriptors(gs: dict[str, Any], descriptors: list[dict[str, 
     joker_slots = gs.get("joker_slots", 5)
     deck: list = gs.setdefault("deck", [])
 
+    hand_added = False
     for desc in descriptors:
         count = desc.get("count", 1)
 
@@ -2771,11 +2780,14 @@ def _resolve_create_descriptors(gs: dict[str, Any], descriptors: list[dict[str, 
                 # the hand area during SELECTING_HAND.
                 if gs.get("phase") == GamePhase.SELECTING_HAND:
                     gs.setdefault("hand", []).append(card)
+                    hand_added = True
+                elif gs.get("pack_hand"):
+                    _emplace_into_pack_hand(gs, card)
                 else:
                     deck.insert(0, card)          # the pile's bottom (cardarea.lua:33)
 
-    # Re-sort hand if any cards were added during SELECTING_HAND
-    if gs.get("phase") == GamePhase.SELECTING_HAND:
+    # Re-sort hand only if a card joined it: a Planet or Tarot leaves the hand's order alone
+    if hand_added:
         _sort_hand_desc(gs.get("hand", []))
 
 
@@ -3298,6 +3310,7 @@ def _press_play(
         # LSN6STIA off-by-one), only the discard counters and Burnt
         # Joker (hook-gated) are skipped.
         hand: list = gs.get("hand", [])
+        hand_pos = {id(c): i for i, c in enumerate(hand)}
         hooked: list = []
         for _ in range(min(2, len(hand))):
             if hand and rng:
@@ -3305,6 +3318,8 @@ def _press_play(
                 target, _ = rng.element(hand, seed_val)
                 hand.remove(target)
                 hooked.append(target)
+        # Lua sorts the highlighted cards by screen position before discarding (state_events.lua:405)
+        hooked.sort(key=lambda c: hand_pos[id(c)])
         if hooked:
             _fire_discard_effects(gs, hooked, hook=True)
         blind.triggered = True
