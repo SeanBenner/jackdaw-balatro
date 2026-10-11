@@ -536,6 +536,7 @@ def _usable_consumables(gs: dict[str, Any]) -> list[Action]:
             consumables=consumables,
             consumable_limit=consumable_limit,
             joker_limit=joker_limit,
+            game_state=gs,
         ):
             actions.append(UseConsumable(card_index=i))
     return actions
