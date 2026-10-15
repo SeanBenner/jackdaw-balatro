@@ -34,15 +34,112 @@ RANDOM_JOKERS = {"j_misprint", "j_bloodstone", "j_space"}
 RANDOM_BOSSES = {"The Hook", "Crimson Heart"}
 
 
+_ATOMIC = frozenset({int, float, str, bool, type(None)})
+
+
+def _dc(v, seen: set):
+    """``copy.deepcopy`` for the plain data in card abilities and blind state: nested dicts and
+    lists of atomic values are rebuilt directly; anything else goes to ``copy.deepcopy``. A
+    container reached twice raises _Aliased so the caller can fall back to deepcopy, which keeps
+    aliasing."""
+    t = type(v)
+    if t in _ATOMIC:
+        return v
+    if t is dict or t is list:
+        if id(v) in seen:
+            raise _Aliased
+        seen.add(id(v))
+        if t is dict:
+            out = {}
+            for k, x in v.items():
+                if type(k) not in _ATOMIC:
+                    raise _Aliased  # non-atomic key: let deepcopy handle the whole thing
+                out[k] = _dc(x, seen)
+            return out
+        return [_dc(x, seen) for x in v]
+    return copy.deepcopy(v)
+
+
+class _Aliased(Exception):
+    pass
+
+
+def _deep(v):
+    """Exact stand-in for ``copy.deepcopy(v)`` on plain nested data, without its overhead."""
+    try:
+        return _dc(v, set())
+    except _Aliased:
+        return copy.deepcopy(v)
+
+
+def _plain(cls) -> bool:
+    """True if ``copy.copy`` of an instance is just a new object with the same ``__dict__``."""
+    return (
+        "__slots__" not in cls.__dict__
+        and cls.__new__ is object.__new__
+        and cls.__reduce_ex__ is object.__reduce_ex__
+        and cls.__reduce__ is object.__reduce__
+        and getattr(cls, "__copy__", None) is None
+        and getattr(cls, "__deepcopy__", None) is None
+        and getattr(cls, "__getstate__", object.__getstate__) is object.__getstate__
+        and getattr(cls, "__setstate__", None) is None
+    )
+
+
+_PLAIN: dict[type, bool] = {}
+
+
+def _shallow(o):
+    """``copy.copy(o)``, done directly for plain classes."""
+    cls = type(o)
+    plain = _PLAIN.get(cls)
+    if plain is None:
+        plain = _PLAIN[cls] = _plain(cls)
+    if not plain:
+        return copy.copy(o)
+    n = object.__new__(cls)
+    n.__dict__.update(o.__dict__)
+    return n
+
+
 def _copy_card(c):
     """Copy everything scoring can mutate on a card (much faster than deepcopy)."""
-    n = copy.copy(c)
-    n.ability = copy.deepcopy(c.ability)
+    n = _shallow(c)
+    n.ability = _deep(c.ability)
     if c.base is not None:
-        n.base = copy.copy(c.base)
+        n.base = _shallow(c.base)
     if c.edition is not None:
         n.edition = dict(c.edition)
     return n
+
+
+def _copy_levels_blind(hl, blind):
+    """``copy.deepcopy((hand_levels, blind))`` for the engine's HandLevels and Blind."""
+    from jackdaw.engine.blind import Blind
+    from jackdaw.engine.hand_levels import HandLevels, HandState
+
+    if (
+        type(hl) is HandLevels
+        and type(blind) is Blind
+        and _PLAIN.setdefault(HandState, _plain(HandState))
+        and _PLAIN.setdefault(Blind, _plain(Blind))
+        and all(type(h) is HandState for h in hl._hands.values())
+    ):
+        try:
+            seen: set = set()
+            hands = {}
+            for k, h in hl._hands.items():
+                n = object.__new__(HandState)
+                n.__dict__.update(_dc(h.__dict__, seen))
+                hands[k] = n
+            b = object.__new__(Blind)
+            b.__dict__.update(_dc(blind.__dict__, seen))
+        except _Aliased:
+            return copy.deepcopy((hl, blind))
+        n_hl = object.__new__(HandLevels)
+        n_hl._hands = hands
+        return n_hl, b
+    return copy.deepcopy((hl, blind))
 
 
 def _scratch(gs: dict[str, Any]) -> dict[str, Any]:
@@ -97,7 +194,7 @@ def score_play(
     played_c = [_copy_card(c) for c in played]
     held_c = [_copy_card(c) for c in held]
     jokers_c = [_copy_card(c) for c in jokers]
-    hl, blind = copy.deepcopy((gs["hand_levels"], gs["blind"]))
+    hl, blind = _copy_levels_blind(gs["hand_levels"], gs["blind"])
     rng_c = copy.copy(rng or gs["rng"])
     rng_c._state = dict(rng_c._state)
     g = _scratch(gs)

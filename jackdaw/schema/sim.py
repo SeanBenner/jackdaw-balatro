@@ -183,6 +183,34 @@ class SchemaSim:
             types["pack_skip"] = {}
         if ph != GamePhase.GAME_OVER:
             usable = [cons[a.card_index] for a in engine_legal if isinstance(a, A.UseConsumable)]
+            # The engine's list checks each consumable with nothing selected, so tarots that need
+            # targets (Hanged Man, Devil, Strength...) never pass it. Offer one whenever the hand
+            # holds enough valid targets and the engine accepts the smallest such selection.
+            if ph in (GamePhase.SELECTING_HAND, GamePhase.SHOP, GamePhase.BLIND_SELECT, GamePhase.PACK_OPENING):
+                from jackdaw.engine.consumables import can_use_consumable
+
+                for c in cons:
+                    if c in usable:
+                        continue
+                    spec = get_consumable_target_spec(c, gs)
+                    if not spec.needs_card_targets or spec.target_filter == "all_hand":
+                        continue
+                    valid = get_valid_target_cards(c, hand, gs)
+                    k = max(1, spec.min_targets)
+                    if len(valid) < k:
+                        continue
+                    if can_use_consumable(
+                        c,
+                        highlighted=[hand[i] for i in valid[:k]],
+                        hand_cards=hand,
+                        jokers=jokers,
+                        consumables=cons,
+                        consumable_limit=gs.get("consumable_slots", 2),
+                        joker_limit=gs.get("joker_slots", 5),
+                        game_state=gs,
+                    ):
+                        usable.append(c)
+                usable = [c for c in cons if c in usable]
             if usable and ph in (GamePhase.SELECTING_HAND, GamePhase.SHOP, GamePhase.BLIND_SELECT,
                                GamePhase.PACK_OPENING):
                 types["use_consumable"] = {

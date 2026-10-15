@@ -487,6 +487,7 @@ def encode_consumable(
         consumables=consumables,
         consumable_limit=gs.get("consumable_slots", 2),
         joker_limit=gs.get("joker_slots", 5),
+        game_state=gs,
     )
     v[3] = float(can_use)
 
