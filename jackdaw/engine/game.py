@@ -2089,7 +2089,8 @@ def _round_won(gs: dict[str, Any]) -> None:
                 planet_key = pk
                 break
         if planet_key:
-            for c in hand:
+            # a copy: creating the planet re-sorts the hand, and a card moved later would be met twice
+            for c in list(hand):
                 if getattr(c, "seal", None) == "Blue" and not getattr(c, "debuff", False):
                     _resolve_create_descriptors(
                         gs,
